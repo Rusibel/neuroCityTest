@@ -36,10 +36,12 @@ export default function users() {
         }
     getResource('https://reqres.in/api/users')
         .then(data => {
-            console.log(data.data)
             data.data.forEach(({id, email, avatar, first_name: firstName, last_name: lastName}) => {
                 new UserCard(id, email, avatar, firstName, lastName, ".users .container").render();
             });
-        });
+        })
+        .catch(error => {
+            console.log(error);           
+        })
 
 } 

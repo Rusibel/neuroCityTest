@@ -1,14 +1,3 @@
-const postData = async (url, data) => {
-    let res = await fetch(url, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: data
-    });
-
-    return await res.json();
-};
 
 async function getResource(url) {
     let res = await fetch(url);
@@ -20,5 +9,35 @@ async function getResource(url) {
     return await res.json();
 }
 
-export {postData};
+export const wsConnection = new WebSocket("ws:http://localhost:3000/styles");
+
+wsConnection.onopen = function() {
+    alert("Соединение установлено.");
+};
+
+wsConnection.onclose = function(event) {
+    if (event.wasClean) {
+        alert('Соединение закрыто чисто');
+    } else {
+        alert('Обрыв соединения'); // например, "убит" процесс сервера
+    }
+    alert('Код: ' + event.code + ' причина: ' + event.reason);
+};
+
+wsConnection.onerror = function(error) {
+    alert("Ошибка " + error.message);
+};
+
+export const wsSend = function(data) {
+// readyState - true, если есть подключение
+    if(!wsConnection.readyState){
+        setTimeout(function (){
+            wsSend(data);
+        },100);
+    } else {
+        wsConnection.send(data);
+    }
+};
+
+
 export {getResource};
