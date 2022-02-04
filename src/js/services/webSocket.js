@@ -1,4 +1,4 @@
-export default function wsService(url = "wss://javascript.info/article/websocket/demo/hello") {
+export default function wsService(url = "wss://localhost:8080/") {
     let socket = new WebSocket(url);
 
     socket.onopen = function(e) {

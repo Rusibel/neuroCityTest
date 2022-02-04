@@ -2,7 +2,6 @@ export default function video() {
 
     const video = document.querySelector('video'),
     timePicker = document.getElementById('timer');
-    console.log(timePicker)
     video.addEventListener('click', ()=>{
         if(video.paused)
           video.play();

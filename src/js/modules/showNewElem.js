@@ -24,12 +24,10 @@ const showMoreElem = (trigger = '.button_rnd_block', wrap = '#styles .row') => {
 
     function toggleCardsVisible (e) {
         e.preventDefault();
-        console.log(wrapper.children)
         if (wrapper.children.length == 0) {
             
             getResource('http://localhost:3000/styles')
                 .then(res => {
-                    console.log(res);
                     createCards(res)
                 })
                 .catch(error => {
@@ -55,7 +53,6 @@ const showMoreElem = (trigger = '.button_rnd_block', wrap = '#styles .row') => {
 
             function createCards(res) {
                 res.length = 3;
-                console.log(res);
                 res.forEach(({src}) => {
                     let card = document.createElement('div');
 

@@ -142,11 +142,9 @@ const showMoreElem = (trigger = '.button_rnd_block', wrap = '#styles .row') => {
 
   function toggleCardsVisible(e) {
     e.preventDefault();
-    console.log(wrapper.children);
 
     if (wrapper.children.length == 0) {
       (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/styles').then(res => {
-        console.log(res);
         createCards(res);
       }).catch(error => {
         let statusMessage = document.createElement('div');
@@ -166,7 +164,6 @@ const showMoreElem = (trigger = '.button_rnd_block', wrap = '#styles .row') => {
 
       function createCards(res) {
         res.length = 3;
-        console.log(res);
         res.forEach(({
           src
         }) => {
@@ -317,7 +314,6 @@ __webpack_require__.r(__webpack_exports__);
 function video() {
   const video = document.querySelector('video'),
         timePicker = document.getElementById('timer');
-  console.log(timePicker);
   video.addEventListener('click', () => {
     if (video.paused) video.play();else video.pause();
   });
@@ -383,20 +379,10 @@ function video() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "postData": function() { return /* binding */ postData; },
+/* harmony export */   "wsConnection": function() { return /* binding */ wsConnection; },
+/* harmony export */   "wsSend": function() { return /* binding */ wsSend; },
 /* harmony export */   "getResource": function() { return /* binding */ getResource; }
 /* harmony export */ });
-const postData = async (url, data) => {
-  let res = await fetch(url, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: data
-  });
-  return await res.json();
-};
-
 async function getResource(url) {
   let res = await fetch(url);
 
@@ -407,7 +393,36 @@ async function getResource(url) {
   return await res.json();
 }
 
+const wsConnection = new WebSocket("ws:http://localhost:3000/styles");
 
+wsConnection.onopen = function () {
+  alert("Соединение установлено.");
+};
+
+wsConnection.onclose = function (event) {
+  if (event.wasClean) {
+    alert('Соединение закрыто чисто');
+  } else {
+    alert('Обрыв соединения'); // например, "убит" процесс сервера
+  }
+
+  alert('Код: ' + event.code + ' причина: ' + event.reason);
+};
+
+wsConnection.onerror = function (error) {
+  alert("Ошибка " + error.message);
+};
+
+const wsSend = function (data) {
+  // readyState - true, если есть подключение
+  if (!wsConnection.readyState) {
+    setTimeout(function () {
+      wsSend(data);
+    }, 100);
+  } else {
+    wsConnection.send(data);
+  }
+};
 
 
 /***/ }),
@@ -423,7 +438,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ wsService; }
 /* harmony export */ });
-function wsService(url = "wss://javascript.info/article/websocket/demo/hello") {
+function wsService(url = "wss://localhost:8080/") {
   let socket = new WebSocket(url);
 
   socket.onopen = function (e) {
